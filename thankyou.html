@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/thank_you.js"></script>
+  </head>
+  <body>
+      <div class="main_header">
+         <!--  <button id="closeBtn" class="btn btn-danger pull-right" style="border-radius: 100px; font-size:6px;"> X </button> -->
+         <a href="index.html"><img src="images/logo1.png" /></a>
+         <span class="glyphicon glyphicon-cog pull-right setting_btn" onclick="openNav()"></span>
+      </div>
+      <div class="container ">
+        <br>
+        <p class="alert alert-success" role="alert">
+         Hi <span id="user_name"></span>,<br> Your ticket has raised successfully with No.<span id="ticket_num"></span><br>Please note it down for future use.
+        </p>
+        <br>
+        <p class="text-center"><!-- <b>Hi <span id="user_name"></span>, We have registered your call. Your Ticket No: <span id="ticket_num"></span></b><br/> -->
+        	<b > We will respond to you soon.</b><br><b>For more detail contact 022-27814905</b></p>
+        <form  id="thankyou_form" name="thankyou_form" class="form" method="post" >
+          <div class="text-center">
+            <a class="btn btn-primary" href="index.html">Back</a>
+          </div>
+        </form>
+        <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn sidenav_a" onclick="closeNav()">Close <span class="pull-right">X</span>  </a>
+          <a onClick="newwin('asset')">Asset Detail</a>
+          <a onClick="newwin('user')">User Detail</a>
+          <a onClick="newwin('ticket')">Ticket History</a>
+          <!--  <a href="#">Others</a> -->
+      </div>
+      </div>
+  </body>
+  <script type="text/javascript">
+    const {remote} = require('electron');
+    const {BrowserWindow} = require('electron').remote;
+    const {ipcRenderer} = require('electron');
+
+    const username = remote.getGlobal('userName');
+    document.getElementById('user_name').innerHTML = username;
+
+    const ticket_num = remote.getGlobal('ticketNo');
+    document.getElementById('ticket_num').innerHTML = ticket_num;
+
+    // document.getElementById("closeBtn").addEventListener("click", (e) => {
+    //     var window = BrowserWindow.getFocusedWindow();
+    //     window.close();
+    // });
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit',submitForm);
+
+    function submitForm(e){
+      ipcRenderer.send('openHome', {});
+    }
+
+    function openNav() {
+       document.getElementById("mySidenav").style.width = "150px";
+     }
+
+     function closeNav() {
+       document.getElementById("mySidenav").style.width = "0";
+     }
+
+     function newwin(win_type){
+        const login_name = remote.getGlobal('loginName');
+        const input_values = {
+          type: win_type, 
+          loginname: login_name
+        };
+        ipcRenderer.send('newwindow',input_values);
+     }
+  </script>
+</html>

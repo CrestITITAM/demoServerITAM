@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ITAM</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->  
+  <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->  
+  <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->  
+  <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="css/util.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+  
+  <div class="limiter">
+    <div class="container-login100" style="background-image: url('images/bg-01.jpg');">
+      <div class="wrap-login100">
+        <form class="login100-form validate-form" id="login_form" name="login_form">
+          <input class="input100" type="hidden" name="client_id" id="client_id" >
+         <!--  <span class="login100-form-logo">
+            <i class="zmdi zmdi-landscape"></i>
+          </span>-->
+
+          <span class="login100-form-title p-b-10 ">
+            <img src="images/logo1.png"/>
+          </span>
+          <div  >
+   <!-- <span><img src="images/logo1.png"/></span> -->
+
+
+          <div class="wrap-input100 validate-input" data-validate = "System Key">
+            <input class="input100" type="text" name="sys_key" id="sys_key" readonly="" disabled="" placeholder="System Key">
+            <span class="focus-input100"></span>
+          </div>
+
+          <div class="wrap-input100 validate-input" data-validate = "Client No">
+            <input class="input100" type="text" name="client_no" id="client_no" placeholder="Client No">
+            <span class="focus-input100"></span>
+          </div>
+
+          <div class="wrap-input100 validate-input" data-validate = "Token">
+            <input class="input100" type="text" name="token" id="token" placeholder="Token">
+            <span class="focus-input100" ></span>
+          </div>
+
+          <div class="container-login100-form-btn">
+            <button class="login100-form-btn" type="button" onclick="myFunction()">
+              Validate
+            </button>
+          </div>
+          <br>
+           <span style="color:white;"></span>
+           <div class="form-group" id="allocate_user">
+              <select class="form-control" id="alloc_users" >
+                <option value="" selected disabled>Allocated User</option>
+              </select>
+           </div>
+
+           <span style="color:white;"></span>
+           <div class="form-group" id="device_name">
+              <select class="form-control" id="device_type" >
+                <option value="" selected disabled>Device Type</option>
+              </select>
+           </div>
+
+            <div class="container-login100-form-btn">
+              <button class="login100-form-btn" type="submit">
+                Submit
+              </button>
+            </div>
+      
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
+  <div id="dropDownSelect1"></div>
+  
+<!--===============================================================================================-->
+  <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+  <script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+  <script src="vendor/bootstrap/js/popper.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+  <script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+  <script src="vendor/daterangepicker/moment.min.js"></script>
+  <script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+  <script src="vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+  <script src="js/main.js"></script>
+
+ <script>window.$ = window.jQuery = require('jquery');</script>
+  <script>
+  const electron = require('electron');
+  const {ipcRenderer} = electron;
+  const {BrowserWindow} = require('electron').remote;
+  const {remote} = require('electron');
+  const root_url = remote.getGlobal('root_url');
+
+  const form = document.querySelector('form');
+  form.addEventListener('submit',submitForm);
+
+  function submitForm(e){
+    e.preventDefault(); 
+    var sys_key = document.querySelector('#sys_key').value;
+    //var client_id = document.querySelector('#client_id').value;console.log(client_id);
+    var user_id = document.querySelector('#alloc_users').value; 
+    var dev_type = document.querySelector('#device_type').value;
+    if(sys_key != '' && user_id != '' && dev_type != '' ){ 
+      const input_values = {
+        system_key: sys_key, 
+        userId : user_id,
+        device_type : dev_type
+      };
+      ipcRenderer.send('login_data',input_values);
+      document.login_form.reset();
+    }
+  }
+
+  function getSystemKey(){ 
+    var system_key = Math.floor(Math.random() * (999999 - 10 + 1) + 10); 
+    var final_key = 'ePrompt'+system_key;
+    
+    $.ajax({
+        url: root_url+'/check_clientno.php',
+        type: 'POST',
+        data: {funcType:'checkSysKey',final_key: final_key},
+        success: function (data) {
+           output = JSON.parse(JSON.stringify(data));
+           if(output.status == 'valid'){
+             document.getElementById('sys_key').value = final_key;
+           }else{
+              getSystemKey();
+           }
+        },
+        error: function (xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
+
+  }
+
+  function loadAllocUser(userId){
+    $.ajax({
+        url: root_url+'/check_clientno.php',
+        type: 'POST',
+        data: {funcType: 'getAllocUser',userID: userId},
+        success: function (data) {
+           output = JSON.parse(JSON.stringify(data));
+           if(output.status == 'valid'){
+              var select = document.getElementById("alloc_users"); 
+              document.getElementById("alloc_users").options.length = 0;
+              if(output.result && output.result.length > 0 ){
+                for(var i = 0; i < output.result.length; i++) {
+                  var el = document.createElement("option");
+                  el.textContent = output.result[i][0];
+                  el.value = output.result[i][1];
+                  select.appendChild(el);
+                }
+                getSystemKey();
+              }
+            }else{
+              console.log('invalid');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
+  }
+
+  function loadDevType(isCloudUser){ 
+    var select = document.getElementById("device_type");
+    document.getElementById("device_type").options.length = 0;
+    var options = new Array();
+    if(isCloudUser == 'yes'){
+// assign device type id s it is needed in asset table
+      options[0] = {name:"Laptop",value: 4};
+      options[1] = {name:"Desktop",value: 6};
+      //options[2] = {name:"Server",value: 7};
+      options[2] = {name:"Cloud Server",value: 16};
+
+    }else{
+     options[0] = {name:"Laptop",value: 4};
+     options[1] = {name:"Desktop",value: 6};
+    }
+  
+    for (var i = 0; i < options.length; i++) {
+      var el = document.createElement("option");
+      el.textContent = options[i].name;
+      el.value = options[i].value;
+      select.appendChild(el);
+    }
+  }
+
+  function myFunction(){ 
+    client_no = document.getElementById('client_no').value;
+    token = document.getElementById('token').value;
+
+    if(client_no != "" && token != ""){
+      $.ajax({
+          url: root_url+'/check_clientno.php',
+          type: 'POST',
+          data: {funcType: 'checkValidity',clientNum: client_no,Token: token},
+          success: function (data) { console.log(data);
+            console.log(data.status);
+            console.log(data.result[0]);
+            output = JSON.parse(JSON.stringify(data));
+            //output = JSON.parse(JSON.stringify(data)); console.log(output);
+            if(output.status == 'valid'){
+              user_id = output.result; 
+              loadAllocUser(user_id[0]);
+              if(user_id[1] == '2' && user_id[2] == '5'){
+                loadDevType('yes');
+              }else{
+                loadDevType('no');
+              }
+            }else{
+              console.log('invalid');
+              var select = document.getElementById("alloc_users");
+              var length = select.options.length;
+              for (i = length-1; i >= 0; i--) {
+                select.options[i] = null;
+              }
+              window.location = 'invalid.html';
+            }
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+      });
+    }
+
+  }
+
+</script>
+
+</body>
+</html>

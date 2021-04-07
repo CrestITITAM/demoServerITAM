@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ITAM</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+div.container {
+    width: 73%;
+    border: none;
+    margin: auto;
+}
+
+header, footer {
+    padding: 1em;
+    color: #0a0fa7;
+    /*background-color: #007196;*/
+    clear: left;
+    text-align: center;
+}
+article {
+    padding: 1em;
+}
+
+</style>
+<!-- <script type="text/javascript" src="scripts.js"></script>
+<link rel="stylesheet" href="styles.css"> -->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/all_in_one.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+
+</head>
+<body onload="activeTab()">
+
+<header class="header">
+ <a href="#default" ><img class="logo" src="../images/logo1.png" /></a>
+  	<nav class="nav_bar">
+		  <a class="tablinks" id="onloadactive" onclick="openTab(event, 'ticket')">Tickets</a> 
+		  <a class="tablinks" onclick="openTab(event, 'asset')">Asset</a> 
+		  <a class="tablinks" onclick="openTab(event, 'user')">User</a> 
+		  <a class="tablinks" onclick="openTab(event, 'usage')">Utilization</a>
+		  <a class="tablinks" onclick="openTab(event, 'app')">App Used</a>
+		 <!--  <span class="nav_username" id="nav_username"> Username</span> -->
+	</nav>
+</header>
+
+<article>
+	<div class="col-md-12">	  	
+	  	<div id="ticket" class="tabcontent">
+		  <h3>Ticket Detail</h3>
+		  <table id="ticket_table" class="table table-bordered" >
+			  <thead class="thead-dark">
+			  	<tr>
+			  		<th>Ticket No</th>
+			  		<th>Issue</th>
+			  		<th>Reported On</th>
+			  		<th>Status</th>
+			  	</tr>
+			  </thead>
+			  <tbody id="ticket_body" class="tbody" >
+			  	
+			  </tbody>
+		 </table>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div id="asset" class="tabcontent">
+		  <h3>Asset Detail</h3><hr>
+		  <table class="table table-borderless">
+		  	<!-- <tbody id="asset_body" class="tbody">
+		  	</tbody> -->
+		  	<tbody>
+				<tr>
+					<td class="content-align-head">Client Id :</td>
+					<td class="content-align-body"><span id="client_Id"></span></td>
+				</tr>
+				<tr>
+					<td class="content-align-head">System Name :</td>
+					<td class="content-align-body"><span id="sys_name"></span></td>
+				</tr>
+				<tr>
+					<td class="content-align-head">System Model :</td>
+					<td class="content-align-body"><span id="sys_model"></span></td>
+				</tr>
+				<tr>
+					<td class="content-align-head">BIOS Name :</td>
+					<td class="content-align-body"><span id="bios_name"></span></td>
+				</tr>
+				<tr>
+					<td class="content-align-head">OS Version :</td>
+					<td class="content-align-body"><span id="os_version"></span></td>
+				</tr>
+				<tr>
+					<td class="content-align-head">Processor Name :</td>
+					<td class="content-align-body"><span id="proc_name"></span></td>
+				</tr>
+			</tbody>
+		  </table>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div id="user" class="tabcontent">
+		  <h3>User Detail</h3><hr>
+	    	<h4 style="text-align: center"><b><span id="username"></span></b></h4>  
+	    	<table border="0" style=" width: 100% !important">
+	    		<tbody>
+	    			<tr>
+	    				<td class="content-align-head">User Id :</td>
+	    				<td class="content-align-body"><span id="loginId"></span></td>
+	    			</tr>
+	    			<tr>
+	    				<td class="content-align-head">Email Id :</td>
+	    				<td class="content-align-body"><span id="emailId"></span></td>
+	    			</tr>
+	    			<tr>
+	    				<td class="content-align-head">Contact No :</td>
+	    				<td class="content-align-body"><span id="cont_num"></span></td>
+	    			</tr>
+	    			<tr>
+	    				<td class="content-align-head">Joined On :</td>
+	    				<td class="content-align-body"><span id="join_date"></span></td>
+	    			</tr>
+	    		</tbody>
+	    	</table>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div id="usage" class="tabcontent" >
+			
+			<div class="form-inline">
+				<h3>Utilization Detail</h3><hr>
+				<div class="form-group filter">
+				  <label for="from_date"> <b>From Date: &nbsp;</b></label><br>
+				  <input type="text" class="form-control" id="from_date">
+				</div>
+				<div class="form-group filter">
+				  <label for="to_date"> <b>To Date : &nbsp;</b></label>
+				  <input type="text" class="form-control" id="to_date">
+				</div>
+				<div class="form-group filter">
+				 <button class="btn btn-primary " onclick="dateFilter()">Submit</button>&nbsp;&nbsp;
+				 <button class="btn  btn-primary " onclick="Export()" >Export</button>
+				</div>
+			</div>
+			<br>
+			<div style="overflow: auto;">
+			   <table id="example"  width="100%" cellspacing="0">
+				        <thead class="thead-dark">
+				            <tr class="header-text">
+				                <th>Date</th>
+						  		<th>Total Memory(GB)</th>
+						  		<th>HDD Total Space(GB)</th>
+						  		<th>HDD Used</th>
+							    <th colspan="4" class="header-text">10AM</th>
+							    <th colspan="4" class="header-text">12PM</th>
+							    <th colspan="4" class="header-text">3PM</th>
+							    <th colspan="4" class="header-text">5PM</th>
+				               
+				            </tr>
+				            <tr class="header-text">
+				            	<th></th>
+						  		<th></th>
+						  		<th></th>
+						  		<th></th>
+						  		<th>CPU (%)</th>
+						  		<th>RAM (%)</th>
+						  		<th>HDD (GB)</th>
+						  		<th>Active User</th>
+						  		<th>CPU (%)</th>
+						  		<th>RAM (%)</th>
+						  		<th>HDD (GB)</th>
+						  		<th>Active User</th>
+						  		<th>CPU (%)</th>
+						  		<th>RAM (%)</th>
+						  		<th>HDD (GB)</th>
+						  		<th>Active User</th>
+						  		<th>CPU (%)</th>
+						  		<th>RAM (%)</th>
+						  		<th>HDD (GB)</th>
+						  		<th>Active User</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+
+				        </tbody>
+				           
+				         
+    		 </table>
+			</div>
+		</div>
+
+	</div>
+	<div class="col-md-12">
+		<div id="app" class="tabcontent" >
+			
+			<div class="form-inline">
+				<h3>Application Used</h3><hr>
+				<div class="form-group filter">
+				  <label for="app_from_date"> <b>Select Date:&nbsp; </b></label>
+				  <input type="text" class="form-control" id="app_from_date">
+				</div>
+				<div class="form-group filter">
+				  <input type="text" class="form-control" id="app_to_date">
+				</div>
+				<div class="form-group filter">
+				 <button class="btn btn-primary" onclick="AppdateFilter()">Submit</button>&nbsp;&nbsp;
+				 <button class="btn btn-primary" onclick="ExportApp()" >Export</button>
+				</div>
+			</div>
+			<br>
+			<div style="overflow: auto;">
+			  <table id="tbl_app" width="100%" cellspacing="0" >
+				  <thead class="thead-dark">
+				  	<tr class="header-text">
+				  		<th>Date</th>
+					    <th colspan="2" class="header-text">10AM</th>
+					    <th colspan="2" class="header-text">12PM</th>
+					    <th colspan="2" class="header-text">3PM</th>
+					    <th colspan="2" class="header-text">5PM</th>
+				  	</tr>
+				  	<tr class="header-text">
+				  		<th></th>
+				  		<th>Active User</th>
+				  		<th>App Used</th>
+				  		<th>Active User</th>
+				  		<th>App Used</th>
+				  		<th>Active User</th>
+				  		<th>App Used</th>
+				  		<th>Active User</th>
+				  		<th>App Used</th>
+				  	</tr>
+				  </thead>
+				  <tbody id="app_body" class="tbody" >
+				  	
+				  </tbody>
+			  </table>
+			</div>
+		</div>
+	</div>
+</article>
+
+<footer>
+	<div class="footer footer-bottom text-center "> 
+	    	<div class="col-md-12">
+				<span class="copy-text">Copyright © Crest IT Consulting Pvt. Ltd  2012 - 2020. All Rights Reserved &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  <a href="tel:+912227814905" class="pull-right"><i class="footer-text" aria-hidden="true"></i> <span style="color:white;" ><b>+91-22-27814905</b></span></a><span><a href="tel:+91 9773397735"><span style="color:white;" ><b> / +91 9773397735</b></span></a></span>	 </span>
+			</div>
+	</div>
+</footer>
+
+</body>
+<script>
+	const electron = require('electron');
+	const ipc = require('electron').ipcRenderer;
+	const {ipcRenderer} = electron;
+	const {BrowserWindow} = require('electron').remote;
+	const {remote} = require('electron');
+	const root_url = remote.getGlobal('root_url');
+	const sysKey = remote.getGlobal('sysKey');
+
+	const client_id = remote.getGlobal('clientID');
+
+	function activeTab(){
+
+		document.getElementById('ticket').style.display = "block";
+		document.getElementById('onloadactive').className += " active";
+		const input_values = {
+		    tabName: 'ticket', 
+		    clientid : client_id
+		  };
+		ipcRenderer.send('tabData',input_values); 
+
+		getUserName();
+	}
+
+	function getUserName(){
+		const input_values = {
+		    tabName: 'ticket', 
+		    clientid : client_id
+		  };
+		ipcRenderer.send('getUsername',input_values); 
+	}
+
+	function dateFilter(){
+		from_date = document.getElementById('from_date').value;
+		to_date = document.getElementById('to_date').value;
+		const input_values = {
+			tabName: 'usage', 
+		    clientid : client_id,
+		    from: from_date, 
+		    to : to_date
+		  };
+		ipcRenderer.send('tabData',input_values); 
+	}
+
+	function AppdateFilter(){
+		app_from_date = document.getElementById('app_from_date').value; 
+		app_to_date = document.getElementById('app_to_date').value; 
+		const input_values = {
+			tabName: 'app', 
+		    clientid : client_id,
+		    from: app_from_date, 
+		    to : app_to_date
+		  };
+		ipcRenderer.send('tabData',input_values); 
+	}
+
+	// ipcRenderer.on('returnUsername', (event, data) => {
+	// 	if(data['name'] != ''){
+	// 		document.getElementById('nav_username').innerHTML = data['name'];
+	// 	}else{
+	// 		document.getElementById('nav_username').innerHTML = 'UnKnown';
+	// 	}
+	// });
+
+	function openTab(evt, tabName) {
+	  var i, tabcontent, tablinks;
+	  var from_date,to_date;
+	  if(tabName == 'usage'){
+	  	from_date = document.getElementById('from_date').value;
+	  	to_date = document.getElementById('to_date').value;
+	  }else if(tabName == 'app'){
+	  	from_date = document.getElementById('app_from_date').value;
+	  	to_date = document.getElementById('app_to_date').value;
+	  }else{
+	  	from_date = '';
+	  	to_date = '';
+	  }
+	  
+	  const input_values = {
+	    tabName: tabName, 
+	    clientid : client_id,
+	    from: from_date,
+	    to: to_date
+	  };
+	  tabcontent = document.getElementsByClassName("tabcontent");
+	  for (i = 0; i < tabcontent.length; i++) {
+	    tabcontent[i].style.display = "none";
+	  }
+	  tablinks = document.getElementsByClassName("tablinks");
+	  for (i = 0; i < tablinks.length; i++) {
+	    tablinks[i].className = tablinks[i].className.replace(" active", "");
+	  }
+	  document.getElementById(tabName).style.display = "block";
+	  evt.currentTarget.className += " active";
+
+	  ipcRenderer.send('tabData',input_values);
+
+	}
+
+	ipcRenderer.on('tabTicketReturn', (event, data) => { // IPC event listener
+		var ticTab = document.getElementById('ticket_body');
+	   	ticTab.innerHTML = "";
+	   	const table = document.querySelector('table');
+		const tbody = document.querySelector('tbody');
+		if(data.length > 0){ 
+		  	for(let index = 0; index < data.length; index++) {
+		  		
+			  const td = document.createElement('td');
+			  const tr = document.createElement('tr');
+			  const itemvalue = document.createTextNode(data[index][0]);
+			  td.appendChild(itemvalue);
+			  tr.appendChild(td);
+			  tbody.appendChild(tr);
+			  
+
+			  const td1 = document.createElement('td');
+			  const itemvalue1 = document.createTextNode(data[index][1]);
+			  td1.appendChild(itemvalue1);
+			  tr.appendChild(td1);
+			  tbody.appendChild(tr);
+
+			  const td2 = document.createElement('td');
+			  const itemvalue2 = document.createTextNode(data[index][2]);
+			  td2.appendChild(itemvalue2);
+			  tr.appendChild(td2);
+			  tbody.appendChild(tr);
+
+			  const td3 = document.createElement('td');
+			  const itemvalue3 = document.createTextNode(data[index][3]);
+			  td3.appendChild(itemvalue3);
+			  tr.appendChild(td3);
+			  tbody.appendChild(tr);
+
+			  table.appendChild(tbody);
+            }   
+		}else{
+		  	  const td = document.createElement('td');
+		  	  td.colSpan = "4";
+		  	  td.style.textAlign = "center";
+			  const tr = document.createElement('tr');
+			  const itemvalue = document.createTextNode('No ticket raised');
+			  td.appendChild(itemvalue);
+			  tr.appendChild(td);
+			  tbody.appendChild(tr);
+			  table.appendChild(tbody);
+		  }
+	});
+
+	ipcRenderer.on('tabAssetReturn', (event, data) => { 
+		if(data != ''){ 
+			document.getElementById('client_Id').innerHTML = data[0];
+		    document.getElementById('sys_name').innerHTML = data[1];
+		    document.getElementById('sys_model').innerHTML = data[2];
+		    document.getElementById('bios_name').innerHTML = data[5];
+		    document.getElementById('os_version').innerHTML = data[3];
+		    document.getElementById('proc_name').innerHTML = data[4];
+		}
+	});
+
+	ipcRenderer.on('tabUserReturn', (event, data) => { 
+		document.getElementById('loginId').innerHTML = data[0];
+	    document.getElementById('username').innerHTML = data[1];
+	    document.getElementById('cont_num').innerHTML = data[2];
+	    document.getElementById('emailId').innerHTML = data[3];
+	    document.getElementById('join_date').innerHTML = data[4];
+	});
+
+	ipcRenderer.on('tabUtilsReturn', (event, data) => { 
+		// var utilTab = document.getElementById('utils_body');
+		// const tbody =  document.getElementById('utils_body');
+		// utilTab.innerHTML = ""; 
+		from_date = document.getElementById('from_date').value;
+	  	to_date = document.getElementById('to_date').value;
+	  	
+		$( document ).ready(function() {
+			$('#example').dataTable({
+				 "bProcessing": false,
+				 "bFilter": false,
+				 "bLengthChange": false,
+				 "order": [],
+			     "sAjaxSource": root_url + "/check_clientno.php?func_name=CPUDetail&sysKey="+sysKey+"&from_date="+from_date+"&to_date="+to_date,
+			     "sServerMethod": "POST",
+			     "bDestroy": true,
+			     "language": {
+				    "zeroRecords": "No entries to show"
+				  },
+			  "aoColumnDefs": [
+			  	   { "aTargets": [0], "sDefaultContent": '' }, 
+                   { "aTargets": [1], "sDefaultContent": '' }, 
+                   { "aTargets": [2], "sDefaultContent": '' }, 
+                   { "aTargets": [3], "sDefaultContent": '' }, 
+                   { "aTargets": [4], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[20] == "System off") {
+	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[20] == "pending"){
+	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[20] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       }else {
+	                           return data;
+	                       }
+	                   }
+	                  
+	               },
+                   { "aTargets": [5], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[20] == "System off") {
+	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[20] == "pending"){
+	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[20] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       }
+	                       else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [6], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[20] == "System off") {
+	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[20] == "pending"){
+	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[20] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   }
+	               }, 
+                   { "aTargets": [7], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[20] == "System off") {
+	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[20] == "pending"){
+	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[20] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	              	}, 
+                   { "aTargets": [8], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[21] == "System off") {
+	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[21] == "pending"){
+	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[21] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   }
+	               }, 
+                   { "aTargets": [9], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[21] == "System off") {
+	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[21] == "pending"){
+	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[21] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   }
+	               },
+                   { "aTargets": [10], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[21] == "System off") {
+	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[21] == "pending"){
+	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[21] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [11], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[21] == "System off") {
+	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[21] == "pending"){
+	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[21] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	              }, 
+                   { "aTargets": [12], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[22] == "System off") {
+	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[22] == "pending"){
+	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[22] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [13], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                        if (full[22] == "System off") {
+	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[22] == "pending"){
+	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[22] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [14], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                        if (full[22] == "System off") {
+	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[22] == "pending"){
+	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[22] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               },
+                   { "aTargets": [15], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                        if (full[22] == "System off") {
+	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[22] == "pending"){
+	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[22] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   }
+	               }, 
+                   { "aTargets": [16], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[23] == "System off") {
+	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[23] == "pending"){
+	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[23] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [17], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[23] == "System off") {
+	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[23] == "pending"){
+	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[23] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [18], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[23] == "System off") {
+	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[23] == "pending"){
+	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[23] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }, 
+                   { "aTargets": [19], "sDefaultContent": '',
+	                   //"mData": "download_link",
+	                   "mRender": function (data, type, full) {
+	                       if (full[23] == "System off") {
+	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	                       } else if(full[23] == "pending"){
+	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
+	                       } else if(full[23] == "not fetched"){
+	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	                       } else {
+	                           return data;
+	                       }
+	                   } 
+	               }
+                ]
+			});   
+		});
+
+	});
+
+	ipcRenderer.on('tabAppReturn', (event, data) => { 
+		from_date = document.getElementById('app_from_date').value;
+	  	to_date = document.getElementById('app_to_date').value;
+		$( document ).ready(function() {
+			$('#tbl_app').dataTable({
+				 "bProcessing": false,
+				  "bFilter": false,
+				 "bLengthChange": false,
+				 "order": [],
+			     "sAjaxSource": root_url + "/check_clientno.php?func_name=APPDetail&sysKey="+sysKey+"&from_date="+from_date+"&to_date="+to_date,
+			     "sServerMethod": "POST",
+			     "bDestroy": true,
+			     "language": {
+				    "zeroRecords": "No entries to show"
+				  },
+			      "aoColumnDefs": [
+				  	   { "aTargets": [0], "sDefaultContent": '' }, 
+	                   { "aTargets": [1], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[9] == "System off") {
+		                           return '<i title="'+full[9]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[9] == "pending"){
+		                       	   return '<i title="'+full[9]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[9] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   } 
+	                   }, 
+	                   { "aTargets": [2], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[9] == "System off") {
+		                           return '<i title="'+full[9]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[9] == "pending"){
+		                       	   return '<i title="'+full[9]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[9] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               }, 
+	                   { "aTargets": [3], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[10] == "System off") {
+		                           return '<i title="'+full[10]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[10] == "pending"){
+		                       	   return '<i title="'+full[10]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[10] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               }, 
+	                   { "aTargets": [4], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[10] == "System off") {
+		                           return '<i title="'+full[10]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[10] == "pending"){
+		                       	   return '<i title="'+full[10]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[10] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               },
+	                   { "aTargets": [5], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[11] == "System off") {
+		                           return '<i title="'+full[11]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[11] == "pending"){
+		                       	   return '<i title="'+full[11]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[11] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               }, 
+	                   { "aTargets": [6], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[11] == "System off") {
+		                           return '<i title="'+full[11]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[11] == "pending"){
+		                       	   return '<i title="'+full[11]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[11] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               }, 
+	                   { "aTargets": [7], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[12] == "System off") {
+		                           return '<i title="'+full[12]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[12] == "pending"){
+		                       	   return '<i title="'+full[12]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[12] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               }, 
+	                   { "aTargets": [8], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) { 
+		                       if (full[12] == "System off") {
+		                           return '<i title="'+full[12]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[12] == "pending"){
+		                       	   return '<i title="'+full[12]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[12] == "not fetched"){
+		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+		                       } else {
+		                           return data;
+		                       }
+		                   }  
+		               }
+	               ]
+
+				 // "aoColumns": [
+					// 	{ mData: '0', sDefaultContent: '' },
+					// 	{ mData: '1', sDefaultContent: '' },
+					// 	{ mData: '2', sDefaultContent: '' },
+					// 	{ mData: '3', sDefaultContent: '' },
+					// 	{ mData: '4', sDefaultContent: '' },
+					// 	{ mData: '5', sDefaultContent: '' },
+					// 	{ mData: '6', sDefaultContent: '' },
+					// 	{ mData: '7', sDefaultContent: '' },
+					// 	{ mData: '8', sDefaultContent: '' }
+			  //   ]
+			});   
+		});
+	});
+
+
+	function Export(){ 
+		const downl_url = remote.getGlobal('downloadURL');
+		var from_date = document.getElementById('from_date').value;
+		var to_date = document.getElementById('to_date').value;
+		  
+		const input_values = {
+		    tabName: 'usage', 
+		    clientid : client_id,
+		    from: from_date,
+		    to: to_date
+		  };
+		ipcRenderer.send("download",input_values);
+	}
+
+	function ExportApp(){ 
+		var from_date = document.getElementById('app_from_date').value;
+		var to_date = document.getElementById('app_to_date').value;
+		  
+		const input_values = {
+		    tabName: 'app', 
+		    clientid : client_id,
+		    from: from_date,
+		    to: to_date
+		  };
+		ipcRenderer.send("download",input_values);
+	}
+
+
+	$(function() {
+        $( "#from_date" ).datepicker({
+		    dateFormat: 'dd/mm/yy',//check change
+		    changeMonth: true,
+		    changeYear: true
+		});
+        $( "#to_date" ).datepicker({
+		    dateFormat: 'dd/mm/yy',//check change
+		    changeMonth: true,
+		    changeYear: true
+		});
+
+        $('#to_date').datepicker('setDate', new Date('yy-mm-dd'));
+
+        var date = $('#to_date').datepicker('getDate', '+1d'); 
+        date.setDate(date.getDate()-7); 
+	    $('#from_date').datepicker('setDate', date);
+
+	    $( "#app_from_date" ).datepicker({
+		    dateFormat: 'dd/mm/yy',//check change
+		    changeMonth: true,
+		    changeYear: true
+		});
+        $( "#app_to_date" ).datepicker({
+		    dateFormat: 'dd/mm/yy',//check change
+		    changeMonth: true,
+		    changeYear: true
+		});
+
+        $('#app_to_date').datepicker('setDate', new Date('dd/mm/yy'));
+
+        var date = $('#app_to_date').datepicker('getDate', '+1d'); 
+        date.setDate(date.getDate()-7); 
+	    $('#app_from_date').datepicker('setDate', date);
+
+
+
+	});
+
+</script>
+</html>

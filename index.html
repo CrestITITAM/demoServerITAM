@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body onLoad="checkConnection()">
+     	<div class="main_header">
+      	 <!--  <button id="closeBtn" class="btn btn-danger pull-right" style="border-radius: 100px; font-size:6px;"> X </button> -->
+      	 <a href="index.html"><img src="images/logo1.png" /></a>
+         <span class="glyphicon glyphicon-cog pull-right setting_btn" onclick="openNav()"></span>
+    	</div>
+      <form role="form">
+         <div class="text-sucess">
+          <b>Resolve Now</b>
+        </div>
+        <div id="network_issue" class="network_issue">
+            <span style="color:white;" ><b>You are Offline. Turn on internet connection and <a onclick="reconnect()" >reload</a></b></span>
+        </div>
+        <div class="cards-list"> 
+          <div class="card 1" onClick="sendto('PC');">
+            <div class="card_image"> 
+              <img src="images/laptops.png" alt="Laptop/PC">
+            </div>
+            <div class="card_title title-black">
+              <p>SYSTEM</p>
+            </div>
+          </div>
+          <div class="card 2" onClick="sendto('WiFi');">
+            <div class="card_image">
+              <img src="images/wifi.png" alt="wifi" >
+              </div>
+            <div class="card_title title-black">
+              <p>WIFI</p>
+            </div>
+          </div>
+          <div class="card 3"  onClick="sendto('Network');">
+            <div class="card_image">
+               <img src="images/network.png" alt="Network">
+            </div>
+            <div class="card_title title-black">
+               <p>NETWORK</p>
+            </div>
+          </div>
+          <div class="card 4" onClick="sendto('Antivirus');">
+            <div class="card_image"> 
+               <img src="images/antivirus.png" alt="wifi">
+            </div>
+            <div class="card_title title-black">
+              <p>ANTIVIRUS </p>
+            </div>
+          </div>
+          <div class="card 5" onClick="sendto('Application');">
+            <div class="card_image">
+               <img src="images/application.png" alt="Application">
+              </div>
+            <div class="card_title title-black">
+              <p>APPLICATION </p>
+            </div>
+          </div>
+          <div class="card 6" onClick="sendto('Printers');">
+            <div class="card_image">
+              <img src="images/printer.png" alt="printer">
+            </div>
+            <div class="card_title title-black">
+              <p> PRINTER</p>
+            </div>
+          </div>
+        </div>
+      </form>
+      <footer>
+         <div class="footer footer-bottom text-center"> 
+           <a href="mailto:eprompto.helpdesk@crestit.in"><i class="footer-text" aria-hidden="true"></i> <span class="footer-text"><b>eprompto.helpdesk@crestit.in</b></span></a><br>
+           <a href="tel:+912227814905"><i class="footer-text" aria-hidden="true"></i> <span style="color:white;" ><b>+91-22-27814905</b></span></a><span><a href="tel:+91 9773397735"><span style="color:white;" ><b> / +91 9773397735</b></span></a></span>
+        </div>
+      </footer>
+  </body>
+  <script type="text/javascript">
+    const electron = require('electron');
+    const {BrowserWindow} = require('electron').remote;
+    const {ipcRenderer} = require('electron');
+    const {remote} = require('electron');
+    
+    const client_id = remote.getGlobal('clientID');
+    const is_net_connected = remote.getGlobal('NetworkStatus');
+
+    // document.getElementById("closeBtn").addEventListener("click", (e) => {
+    //     var window = BrowserWindow.getFocusedWindow();
+    //     window.close();
+    // });
+
+   function checkConnection(){
+      if(is_net_connected == 'No'){
+        document.getElementById("network_issue").style.display = "block";
+      }else{
+        document.getElementById("network_issue").style.display = "none";
+      }
+   }
+
+   function sendto(issue_type){
+          window.location.href='category/pc_laptop.html#type='+issue_type;  
+   }
+
+   function openNav() {
+     const input_values = {};
+     ipcRenderer.send('openTabs',input_values);
+   }
+
+   function closeNav() {
+     document.getElementById("mySidenav").style.width = "0";
+   }
+
+   function reconnect(){
+      const input_values = {};
+      var window = BrowserWindow.getFocusedWindow();
+      window.close();
+      ipcRenderer.send('internet_reconnect',input_values);
+   }
+
+  </script>
+</html>

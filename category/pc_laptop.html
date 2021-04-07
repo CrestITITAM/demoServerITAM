@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  </head>
+  <body onLoad="gettype()">
+    <div class="main_header">
+         <!--  <button id="closeBtn" class="btn btn-danger pull-right" style="border-radius: 100px; font-size:6px;"> X </button> -->
+         <a href="../index.html"><img src="../images/logo1.png"/></a>
+         <span class="glyphicon glyphicon-cog pull-right setting_btn" onclick="openNav()"></span>
+    </div>
+    <div class="container">
+      <br>
+      <p>
+      	 <b>Hi <span id="user_name"></span>, 
+      	   <span id="system" style="display: none" >For your device <span id="sys_name"></span></span>
+      	   <span id="wifi" style="display: none" >Do you have issue with your WiFi</span>
+      	   <span id="network" style="display: none" >Do you have issue with your Network</span>
+      	   <span id="antivirus" style="display: none" >Do you have issue with the Antivirus</span>
+      	   <span id="app" style="display: none" >Do you have issue with any Application</span>
+      	   <span id="printer" style="display: none" >Do you have issue with the Printers</span>
+    	   </b>
+      </p>
+      <form  id="pc_cat_form" name="pc_cat_form" class="form" method="post" >
+      	<input type="hidden" id="issue_type" name="issue_type" >
+        <input type="hidden" id="main_category" name="main_category" >
+      	<label>Please select the issue category</label>
+        <div class="form-group" id="system_select" style="display: none">
+           <!-- <input type="radio" class="radio" id="desktop" name="system_type" value="desktop" onchange="getCategoryData(1,'PC',1)">
+          <label class="title" for="desktop">Desktop</label>
+          <input type="radio" class="radio" id="laptop" name="system_type" value="laptop" onchange="getCategoryData(2,'PC',2)">
+          <label class="title" for="laptop">Laptop</label> -->
+          <select class="form-control" id="pc_category" style="display: none"></select>
+        </div>
+        <div class="form-group" id="wifi_select" style="display: none">
+          <select class="form-control" id="wifi_category"></select>
+        </div>
+        <div class="form-group" id="network_select" style="display: none">
+          <select class="form-control" id="network_category"></select>
+        </div>
+        <div class="form-group" id="anti_select" style="display: none">
+          <select class="form-control" id="anti_category"></select>
+        </div>
+        <div class="form-group" id="app_select" style="display: none">
+          <select class="form-control" id="app_category"></select>
+        </div>
+        <div class="form-group" id="print_select" style="display: none">
+          <select class="form-control" id="printer_category"></select>
+        </div>
+        <div class="form-group">
+      	  <label for="description">Description:</label>
+          <textarea class="form-control" rows="2" id="txtdesc"></textarea>
+    	  </div>
+        <div class="text-center">
+        	<button class="btn btn-primary" type="submit" >Log Call</button>
+        	<a class="btn btn-primary" href="../index.html">Back</a>
+         <!--  <a class="btn btn-primary" onclick="reconnect()">Back</a> -->
+        </div>
+      </form>
+      <!-- <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn sidenav_a" onclick="closeNav()">Close <span class="pull-right">X</span>  </a>
+          <a onClick="newwin('asset')">Asset Detail</a>
+          <a onClick="newwin('user')">User Detail</a>
+          <a onClick="newwin('ticket')">Ticket History</a>
+          <a onClick="newwin('cpuusage')">CPU Usage</a> -->
+          <!--  <a href="#">Others</a> -->
+      <!-- </div> -->
+    </div>
+    <footer>
+      <div class="footer footer-bottom text-center"> 
+         <a href="mailto:eprompto.helpdesk@crestit.in"><i class="footer-text" aria-hidden="true"></i> <span class="footer-text"><b>eprompto.helpdesk@crestit.in</b></span></a><br>
+         <a href="tel:+912227814905"><i class="footer-text" aria-hidden="true"></i> <span style="color:white;" ><b>+91-22-27814905</b></span></a><span><a href="tel:+91 9773397735"><span style="color:white;" ><b> / +91 9773397735</b></span></a></span>
+      </div>
+    </footer>
+  </body>
+  <script>window.$ = window.jQuery = require('jquery');</script>
+  <script>
+  	const {remote} = require('electron');
+  	const {BrowserWindow} = require('electron').remote;
+  	const {ipcRenderer} = require('electron');
+    const root_url = remote.getGlobal('root_url');
+
+  	const sys_name = remote.getGlobal('Sys_name');
+  	document.getElementById('sys_name').innerHTML = sys_name;
+
+    const device_type_id = remote.getGlobal('deviceID');
+
+  	const username = remote.getGlobal('userName');
+  	document.getElementById('user_name').innerHTML = username;
+
+    const userid = remote.getGlobal('loginid');
+
+    const client_id = remote.getGlobal('clientID');
+
+    const asset_id = remote.getGlobal('assetID');
+
+    function getCategoryData($type,$req_type,$main_cat){
+      document.getElementById('main_category').value = $main_cat; 
+      if($req_type == 'PC'){
+        var select = document.getElementById("pc_category"); 
+        document.getElementById("pc_category").style.display="block";
+      }else if($req_type == 'Wifi'){
+        var select = document.getElementById("wifi_category"); 
+        document.getElementById("wifi_category").style.display="block";
+      }else if($req_type == 'Network'){
+        var select = document.getElementById("network_category"); 
+        document.getElementById("network_category").style.display="block";
+      }else if($req_type == 'Antivirus'){
+        var select = document.getElementById("anti_category"); 
+        document.getElementById("anti_category").style.display="block";
+      }else if($req_type == 'App'){
+        var select = document.getElementById("app_category"); 
+        document.getElementById("app_category").style.display="block";
+      }else if($req_type == 'Printers'){
+        var select = document.getElementById("printer_category"); 
+        document.getElementById("printer_category").style.display="block";
+      }
+      
+
+      var length = select.options.length;
+      for (i = length-1; i >= 0; i--) {
+        select.options[i] = null;
+      }
+
+      if($type == 1){
+        parent_id = 13;
+      }else if($type == 2){
+        parent_id = 15;
+      }else if($type == 556){
+        parent_id = 557;
+      }else{
+        parent_id = $type;
+      }
+
+      $.ajax({
+          url: root_url+'/check_clientno.php',
+          type: 'POST',
+          data: {funcType:'fillCategory',parent_id: parent_id},
+          success: function (data) {
+             output = JSON.parse(JSON.stringify(data));
+             if(output.status == 'valid'){
+                if(output.result && output.result.length > 0 ){
+                  for(var i = 0; i < output.result.length; i++) {
+                    var el = document.createElement("option");
+                    el.textContent = output.result[i][1];
+                    el.value = output.result[i][0];
+                    select.appendChild(el);
+                  }
+                }
+              }
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+      });
+
+    }
+    function openNav() {
+       //document.getElementById("mySidenav").style.width = "150px";
+        const input_values = {};
+        ipcRenderer.send('openTabs',input_values);
+     }
+
+     function closeNav() {
+       document.getElementById("mySidenav").style.width = "0";
+     }
+
+    function reconnect(){
+      const input_values = {};
+      var window = BrowserWindow.getFocusedWindow();
+      window.close();
+      ipcRenderer.send('internet_reconnect',input_values);
+    }
+
+  	const form = document.querySelector('form');
+  	form.addEventListener('submit',submitForm);
+
+  	function submitForm(e){
+  		e.preventDefault(); 
+  		issue_type = document.querySelector('#issue_type').value;
+  		if(issue_type == 'PC'){
+  			categories = document.querySelector('#pc_category').value;
+  		}else if(issue_type == 'WiFi'){
+  			categories = document.querySelector('#wifi_category').value;
+  		}else if(issue_type == 'Network'){
+  			categories = document.querySelector('#network_category').value;
+  		}else if(issue_type == 'Antivirus'){
+  			categories = document.querySelector('#anti_category').value;
+  		}else if(issue_type == 'Application'){
+  			categories = document.querySelector('#app_category').value;
+  		}else if(issue_type == 'Printers'){
+  			categories = document.querySelector('#printer_category').value;
+  		}
+  		const input_values = {
+  		  type: document.querySelector('#main_category').value,
+        disp_type : issue_type,
+  		  category: categories,
+  		  desc : document.querySelector('#txtdesc').value,
+        user_id : userid,
+        clientid : client_id,
+        assetID : asset_id
+  		};
+  		ipcRenderer.send('form_data',input_values);
+  	}
+
+  	function gettype(){
+  		 var a=window.location.href.split('#')[1],
+  		 type=a.split('=')[1];
+  		 document.getElementById("issue_type").value = type;
+  		 if(type=='PC'){
+  		 	document.getElementById("system").style.display = "block";
+  		 	document.getElementById("system_select").style.display = "block";
+        if(device_type_id == '6'){
+          getCategoryData(1,'PC',1);
+        }else if(device_type_id == '4'){
+          getCategoryData(2,'PC',2);
+        }else if(device_type_id == '16'){
+          getCategoryData(556,'PC',3); // issue_type_id
+        }
+  		 }else if(type=='WiFi'){
+  		 	document.getElementById("wifi").style.display = "block";
+  		 	document.getElementById("wifi_select").style.display = "block";
+        getCategoryData(179,'Wifi',1);
+  		 }else if(type == 'Network'){
+  		 	document.getElementById("network").style.display = "block";
+  		 	document.getElementById("network_select").style.display = "block";
+        getCategoryData(47,'Network',1);
+  		 }else if(type == 'Antivirus'){
+  		 	document.getElementById("antivirus").style.display = "block";
+  		 	document.getElementById("anti_select").style.display = "block";
+        getCategoryData(265,'Antivirus',1);
+  		 }else if(type == 'Application'){
+  		 	document.getElementById("app").style.display = "block";
+  		 	document.getElementById("app_select").style.display = "block";
+        getCategoryData(156,'App',1);
+  		 }else if(type == 'Printers'){
+  		 	document.getElementById("printer").style.display = "block";
+  		 	document.getElementById("print_select").style.display = "block";
+        getCategoryData(42,'Printers',6);
+  		 }
+  	}
+
+    function newwin(win_type){
+      const input_values = {
+        type: win_type, 
+        clientid : client_id
+      };
+      ipcRenderer.send('newwindow',input_values);
+   }
+  </script>
+</html>
