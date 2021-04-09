@@ -28,8 +28,8 @@ const { autoUpdater } = require('electron-updater');
 const Tray = electron.Tray;
 const iconPath = path.join(__dirname,'images/ePrompto_png.png');
 
-//global.root_url = 'http://localhost/itam_backend';
-global.root_url = 'https://developer.eprompto.com/itam_backend_server';
+global.root_url = 'http://localhost/itam_backend';
+//global.root_url = 'https://developer.eprompto.com/itam_backend_server';
 //global.root_url = 'https://www.eprompto.com/itam_backend_server';
 
 const {app, BrowserWindow, screen, ipcMain} = electron;
@@ -94,7 +94,6 @@ app.on('ready',function(){
 						});
 					}
 				}
-				//readSecurityCSVFile('C:\\ITAMEssential\\EventLogCSV\\securitylog.csv',cookies[0].name);
 			    SetCron(cookies[0].name); 
 				checkSecuritySelected(cookies[0].name);
 			}).catch((error) => {
@@ -1178,31 +1177,32 @@ ipcMain.on("download", (event, info) => {
 						output = JSON.parse(body); 
 						if(output.status == 'valid'){ 
 							data = output.result;
-							
-							output_one = ['Date,Total Memory,HDD Total,HDD Used,10AM,,,,,12PM,,,,,3PM,,,,,5PM,,,,,']
-							second_one = [',,,,CPU,RAM,HDD,Active User,Status,CPU,RAM,HDD,Active User,Status,CPU,RAM,HDD,Active User,Status,CPU,RAM,HDD,Active User,Status']
-							output_one.push(second_one.join()); 
+							output_one = ['Date,Slot Time,Total Ram(GB),Total HDD(GB),HDD Name,CPU(%),RAM(%),HDD(GB),App'];
+						  
 							data.forEach((d) => {
-						       output_one.push(d.join()); // by default, join() uses a ','
-						    });
-						
+							  output_one.push(d[0]);
+								d['detail'].forEach((dd) => {
+								  output_one.push(dd.join()); // by default, join() uses a ','
+								});
+							  });
+						  
 							fs.writeFileSync(filename, output_one.join(os.EOL));
-						    var datetime = new Date();
-						    datetime = datetime.toISOString().slice(0,10);
-
-						    var oldPath = reqPath + '/output.csv';
-						    require_path = 'C:/Users/'+ os.userInfo().username +'/Downloads';
-						 
-							if (!fs.existsSync(require_path)){
-							    fs.mkdirSync(require_path);
-							} 
-
-						    var newPath = 'C:/Users/'+ os.userInfo().username +'/Downloads/perfomance_report_of_'+os.hostname()+'_'+datetime+'.csv';
-						    mv(oldPath, newPath, err => {
-						        if (err) return console.error(err);
-						        console.log('success!');
-						        console.log(alert_message);
-						    });
+							  var datetime = new Date();
+							  datetime = datetime.toISOString().slice(0,10);
+		  
+							  var oldPath = reqPath + '/output.csv';
+							  require_path = 'C:/Users/'+ os.userInfo().username +'/Downloads';
+						   
+							  if (!fs.existsSync(require_path)){
+								  fs.mkdirSync(require_path);
+							  } 
+		  
+							  var newPath = 'C:/Users/'+ os.userInfo().username +'/Downloads/perfomance_report_of_'+os.hostname()+'_'+datetime+'.csv';
+							  mv(oldPath, newPath, err => {
+								  if (err) return console.error(err);
+								  console.log('success!');
+								  console.log(alert_message);
+							  });
 						}
 					}
 				});
@@ -1365,35 +1365,7 @@ ipcMain.on('tabData',function(e,form_data){
 				});
 				
 			}else if(form_data['tabName'] == 'usage'){
-				 session.defaultSession.cookies.get({ url: 'http://www.eprompto.com' })
-	  			 .then((cookies1) => {
-				  	if(cookies1.length > 0){
-				  		request({
-						  uri: root_url+"/check_clientno.php",
-						  method: "POST",
-						  form: {
-						  	funcType: 'cpuDetail',
-						    sys_key: cookies1[0].name,
-						    from_date: form_data['from'],
-						    to_date: form_data['to']
-						  }
-						}, function(error, response, body) { 
-							if(error){
-								log.info('Error while fetching cpu detail '+error);
-							}else{
-								 output = JSON.parse(body); 
-								if(output.status == 'valid'){ 
-									e.reply('tabUtilsReturn', output.result) ;
-								}else if(output.status == 'invalid'){
-									e.reply('tabUtilsReturn', output.result) ;
-								}
-							}
-						});
-				  	}
-				  }).catch((error) => {
-				    console.log(error)
-				  })
-				
+				e.reply('tabUtilsReturn', '');
 			}else if(form_data['tabName'] == 'app'){ 
 				 session.defaultSession.cookies.get({ url: 'http://www.eprompto.com' })
 	  			 .then((cookies1) => {

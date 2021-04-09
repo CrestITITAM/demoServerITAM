@@ -51,7 +51,7 @@ article {
 		  <a class="tablinks" onclick="openTab(event, 'asset')">Asset</a> 
 		  <a class="tablinks" onclick="openTab(event, 'user')">User</a> 
 		  <a class="tablinks" onclick="openTab(event, 'usage')">Utilization</a>
-		  <a class="tablinks" onclick="openTab(event, 'app')">App Used</a>
+		  <!-- <a class="tablinks" onclick="openTab(event, 'app')">App Used</a> -->
 		 <!--  <span class="nav_username" id="nav_username"> Username</span> -->
 	</nav>
 </header>
@@ -141,6 +141,7 @@ article {
 			
 			<div class="form-inline">
 				<h3>Utilization Detail</h3><hr>
+				<div id="util-loader"></div>
 				<div class="form-group filter">
 				  <label for="from_date"> <b>From Date: &nbsp;</b></label><br>
 				  <input type="text" class="form-control" id="from_date">
@@ -156,53 +157,21 @@ article {
 			</div>
 			<br>
 			<div style="overflow: auto;">
-			   <table id="example"  width="100%" cellspacing="0">
-				        <thead class="thead-dark">
-				            <tr class="header-text">
-				                <th>Date</th>
-						  		<th>Total Memory(GB)</th>
-						  		<th>HDD Total Space(GB)</th>
-						  		<th>HDD Used</th>
-							    <th colspan="4" class="header-text">10AM</th>
-							    <th colspan="4" class="header-text">12PM</th>
-							    <th colspan="4" class="header-text">3PM</th>
-							    <th colspan="4" class="header-text">5PM</th>
-				               
-				            </tr>
-				            <tr class="header-text">
-				            	<th></th>
-						  		<th></th>
-						  		<th></th>
-						  		<th></th>
-						  		<th>CPU (%)</th>
-						  		<th>RAM (%)</th>
-						  		<th>HDD (GB)</th>
-						  		<th>Active User</th>
-						  		<th>CPU (%)</th>
-						  		<th>RAM (%)</th>
-						  		<th>HDD (GB)</th>
-						  		<th>Active User</th>
-						  		<th>CPU (%)</th>
-						  		<th>RAM (%)</th>
-						  		<th>HDD (GB)</th>
-						  		<th>Active User</th>
-						  		<th>CPU (%)</th>
-						  		<th>RAM (%)</th>
-						  		<th>HDD (GB)</th>
-						  		<th>Active User</th>
-				            </tr>
-				        </thead>
-				        <tbody>
-
-				        </tbody>
-				           
-				         
+			   <table class="table table-bordered table-hover" id="utils_body"  width="100%" cellspacing="0">
+			        <thead class="thead-dark">
+			            <tr class="header-text" style="text-align: left;">
+			                <th width="10%">Date</th>
+					  		<th width="90%">Detail</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			        </tbody>
     		 </table>
 			</div>
 		</div>
 
 	</div>
-	<div class="col-md-12">
+	<!-- <div class="col-md-12">
 		<div id="app" class="tabcontent" >
 			
 			<div class="form-inline">
@@ -248,7 +217,7 @@ article {
 			  </table>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </article>
 
 <footer>
@@ -428,6 +397,7 @@ article {
 	});
 
 	ipcRenderer.on('tabUtilsReturn', (event, data) => { 
+		document.getElementById('util-loader').style.display='none';
 		// var utilTab = document.getElementById('utils_body');
 		// const tbody =  document.getElementById('utils_body');
 		// utilTab.innerHTML = ""; 
@@ -435,7 +405,7 @@ article {
 	  	to_date = document.getElementById('to_date').value;
 	  	
 		$( document ).ready(function() {
-			$('#example').dataTable({
+			$('#utils_body').dataTable({
 				 "bProcessing": false,
 				 "bFilter": false,
 				 "bLengthChange": false,
@@ -446,380 +416,164 @@ article {
 			     "language": {
 				    "zeroRecords": "No entries to show"
 				  },
-			  "aoColumnDefs": [
-			  	   { "aTargets": [0], "sDefaultContent": '' }, 
-                   { "aTargets": [1], "sDefaultContent": '' }, 
-                   { "aTargets": [2], "sDefaultContent": '' }, 
-                   { "aTargets": [3], "sDefaultContent": '' }, 
-                   { "aTargets": [4], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[20] == "System off") {
-	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[20] == "pending"){
-	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[20] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       }else {
-	                           return data;
-	                       }
-	                   }
-	                  
-	               },
-                   { "aTargets": [5], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[20] == "System off") {
-	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[20] == "pending"){
-	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[20] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       }
-	                       else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [6], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[20] == "System off") {
-	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[20] == "pending"){
-	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[20] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   }
-	               }, 
-                   { "aTargets": [7], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[20] == "System off") {
-	                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[20] == "pending"){
-	                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[20] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	              	}, 
-                   { "aTargets": [8], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[21] == "System off") {
-	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[21] == "pending"){
-	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[21] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   }
-	               }, 
-                   { "aTargets": [9], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[21] == "System off") {
-	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[21] == "pending"){
-	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[21] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   }
-	               },
-                   { "aTargets": [10], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[21] == "System off") {
-	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[21] == "pending"){
-	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[21] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [11], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[21] == "System off") {
-	                           return '<i title="'+full[21]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[21] == "pending"){
-	                       	   return '<i title="'+full[21]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[21] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	              }, 
-                   { "aTargets": [12], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[22] == "System off") {
-	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[22] == "pending"){
-	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[22] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [13], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                        if (full[22] == "System off") {
-	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[22] == "pending"){
-	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[22] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [14], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                        if (full[22] == "System off") {
-	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[22] == "pending"){
-	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[22] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               },
-                   { "aTargets": [15], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                        if (full[22] == "System off") {
-	                           return '<i title="'+full[22]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[22] == "pending"){
-	                       	   return '<i title="'+full[22]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[22] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   }
-	               }, 
-                   { "aTargets": [16], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[23] == "System off") {
-	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[23] == "pending"){
-	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[23] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [17], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[23] == "System off") {
-	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[23] == "pending"){
-	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[23] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [18], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[23] == "System off") {
-	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[23] == "pending"){
-	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[23] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }, 
-                   { "aTargets": [19], "sDefaultContent": '',
-	                   //"mData": "download_link",
-	                   "mRender": function (data, type, full) {
-	                       if (full[23] == "System off") {
-	                           return '<i title="'+full[23]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-	                       } else if(full[23] == "pending"){
-	                       	   return '<i title="'+full[23]+'" class="fa fa-hourglass-half"></i>';
-	                       } else if(full[23] == "not fetched"){
-	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-	                       } else {
-	                           return data;
-	                       }
-	                   } 
-	               }
-                ]
-			});   
-		});
-
-	});
-
-	ipcRenderer.on('tabAppReturn', (event, data) => { 
-		from_date = document.getElementById('app_from_date').value;
-	  	to_date = document.getElementById('app_to_date').value;
-		$( document ).ready(function() {
-			$('#tbl_app').dataTable({
-				 "bProcessing": false,
-				  "bFilter": false,
-				 "bLengthChange": false,
-				 "order": [],
-			     "sAjaxSource": root_url + "/check_clientno.php?func_name=APPDetail&sysKey="+sysKey+"&from_date="+from_date+"&to_date="+to_date,
-			     "sServerMethod": "POST",
-			     "bDestroy": true,
-			     "language": {
-				    "zeroRecords": "No entries to show"
-				  },
 			      "aoColumnDefs": [
-				  	   { "aTargets": [0], "sDefaultContent": '' }, 
-	                   { "aTargets": [1], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[9] == "System off") {
-		                           return '<i title="'+full[9]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[9] == "pending"){
-		                       	   return '<i title="'+full[9]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[9] == "not fetched"){
+	                   { "aTargets": [0], "sDefaultContent": ''},
+	                   { "aTargets": [1][0], "sDefaultContent": '',
+		                   "mRender": function (data, type, full) {
+		                       if (full[20] == "System off") {
+		                           return '<i title="'+full[20]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+		                       } else if(full[20] == "pending"){
+		                       	   return '<i title="'+full[20]+'" class="fa fa-hourglass-half"></i>';
+		                       } else if(full[20] == "not fetched"){
 		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
+		                       }
+		                       else {
 		                           return data;
 		                       }
 		                   } 
-	                   }, 
-	                   { "aTargets": [2], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[9] == "System off") {
-		                           return '<i title="'+full[9]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[9] == "pending"){
-		                       	   return '<i title="'+full[9]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[9] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
-		               }, 
-	                   { "aTargets": [3], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[10] == "System off") {
-		                           return '<i title="'+full[10]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[10] == "pending"){
-		                       	   return '<i title="'+full[10]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[10] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
-		               }, 
-	                   { "aTargets": [4], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[10] == "System off") {
-		                           return '<i title="'+full[10]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[10] == "pending"){
-		                       	   return '<i title="'+full[10]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[10] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
-		               },
-	                   { "aTargets": [5], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[11] == "System off") {
-		                           return '<i title="'+full[11]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[11] == "pending"){
-		                       	   return '<i title="'+full[11]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[11] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
-		               }, 
-	                   { "aTargets": [6], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[11] == "System off") {
-		                           return '<i title="'+full[11]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[11] == "pending"){
-		                       	   return '<i title="'+full[11]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[11] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
-		               }, 
-	                   { "aTargets": [7], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[12] == "System off") {
-		                           return '<i title="'+full[12]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[12] == "pending"){
-		                       	   return '<i title="'+full[12]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[12] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
-		               }, 
-	                   { "aTargets": [8], "sDefaultContent": '',
-		                   "mRender": function (data, type, full) { 
-		                       if (full[12] == "System off") {
-		                           return '<i title="'+full[12]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
-		                       } else if(full[12] == "pending"){
-		                       	   return '<i title="'+full[12]+'" class="fa fa-hourglass-half"></i>';
-		                       } else if(full[12] == "not fetched"){
-		                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
-		                       } else {
-		                           return data;
-		                       }
-		                   }  
 		               }
-	               ]
-
-				 // "aoColumns": [
-					// 	{ mData: '0', sDefaultContent: '' },
-					// 	{ mData: '1', sDefaultContent: '' },
-					// 	{ mData: '2', sDefaultContent: '' },
-					// 	{ mData: '3', sDefaultContent: '' },
-					// 	{ mData: '4', sDefaultContent: '' },
-					// 	{ mData: '5', sDefaultContent: '' },
-					// 	{ mData: '6', sDefaultContent: '' },
-					// 	{ mData: '7', sDefaultContent: '' },
-					// 	{ mData: '8', sDefaultContent: '' }
-			  //   ]
-			});   
+                    ]
+			}); 
 		});
 	});
+
+	// ipcRenderer.on('tabAppReturn', (event, data) => { 
+	// 	from_date = document.getElementById('app_from_date').value;
+	//   	to_date = document.getElementById('app_to_date').value;
+	// 	$( document ).ready(function() {
+	// 		$('#tbl_app').dataTable({
+	// 			 "bProcessing": false,
+	// 			  "bFilter": false,
+	// 			 "bLengthChange": false,
+	// 			 "order": [],
+	// 		     "sAjaxSource": root_url + "/check_clientno.php?func_name=APPDetail&sysKey="+sysKey+"&from_date="+from_date+"&to_date="+to_date,
+	// 		     "sServerMethod": "POST",
+	// 		     "bDestroy": true,
+	// 		     "language": {
+	// 			    "zeroRecords": "No entries to show"
+	// 			  },
+	// 		      "aoColumnDefs": [
+	// 			  	   { "aTargets": [0], "sDefaultContent": '' }, 
+	//                    { "aTargets": [1], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[9] == "System off") {
+	// 	                           return '<i title="'+full[9]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[9] == "pending"){
+	// 	                       	   return '<i title="'+full[9]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[9] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   } 
+	//                    }, 
+	//                    { "aTargets": [2], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[9] == "System off") {
+	// 	                           return '<i title="'+full[9]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[9] == "pending"){
+	// 	                       	   return '<i title="'+full[9]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[9] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               }, 
+	//                    { "aTargets": [3], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[10] == "System off") {
+	// 	                           return '<i title="'+full[10]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[10] == "pending"){
+	// 	                       	   return '<i title="'+full[10]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[10] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               }, 
+	//                    { "aTargets": [4], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[10] == "System off") {
+	// 	                           return '<i title="'+full[10]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[10] == "pending"){
+	// 	                       	   return '<i title="'+full[10]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[10] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               },
+	//                    { "aTargets": [5], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[11] == "System off") {
+	// 	                           return '<i title="'+full[11]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[11] == "pending"){
+	// 	                       	   return '<i title="'+full[11]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[11] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               }, 
+	//                    { "aTargets": [6], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[11] == "System off") {
+	// 	                           return '<i title="'+full[11]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[11] == "pending"){
+	// 	                       	   return '<i title="'+full[11]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[11] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               }, 
+	//                    { "aTargets": [7], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[12] == "System off") {
+	// 	                           return '<i title="'+full[12]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[12] == "pending"){
+	// 	                       	   return '<i title="'+full[12]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[12] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               }, 
+	//                    { "aTargets": [8], "sDefaultContent": '',
+	// 	                   "mRender": function (data, type, full) { 
+	// 	                       if (full[12] == "System off") {
+	// 	                           return '<i title="'+full[12]+'" class="fa fa-times-circle" aria-hidden="true"></i>';
+	// 	                       } else if(full[12] == "pending"){
+	// 	                       	   return '<i title="'+full[12]+'" class="fa fa-hourglass-half"></i>';
+	// 	                       } else if(full[12] == "not fetched"){
+	// 	                       	   return '<i title="System off" class="fa fa-times-circle"></i>';
+	// 	                       } else {
+	// 	                           return data;
+	// 	                       }
+	// 	                   }  
+	// 	               }
+	//                ]
+
+	// 			 // "aoColumns": [
+	// 				// 	{ mData: '0', sDefaultContent: '' },
+	// 				// 	{ mData: '1', sDefaultContent: '' },
+	// 				// 	{ mData: '2', sDefaultContent: '' },
+	// 				// 	{ mData: '3', sDefaultContent: '' },
+	// 				// 	{ mData: '4', sDefaultContent: '' },
+	// 				// 	{ mData: '5', sDefaultContent: '' },
+	// 				// 	{ mData: '6', sDefaultContent: '' },
+	// 				// 	{ mData: '7', sDefaultContent: '' },
+	// 				// 	{ mData: '8', sDefaultContent: '' }
+	// 		  //   ]
+	// 		});   
+	// 	});
+	// });
 
 
 	function Export(){ 
