@@ -28,8 +28,8 @@ const { autoUpdater } = require('electron-updater');
 const Tray = electron.Tray;
 const iconPath = path.join(__dirname,'images/ePrompto_png.png');
 
-global.root_url = 'http://localhost/itam_backend';
-//global.root_url = 'https://developer.eprompto.com/itam_backend_server';
+//global.root_url = 'http://localhost/itam_backend';
+global.root_url = 'https://developer.eprompto.com/itam_backend_server';
 //global.root_url = 'https://www.eprompto.com/itam_backend_server';
 
 const {app, BrowserWindow, screen, ipcMain} = electron;
@@ -429,7 +429,7 @@ function readSecurityCSVFile(filepath,system_key){
 					   sys_key: system_key,
 					   events: ultimate
 					}
-				  }, function(error, response, body) {
+				  }, function(error, response, body) { 
 					  if(error){
 						  log.info('Error while fetching global data '+error);						   
 					  }else{ 
@@ -706,11 +706,12 @@ function updateAssetUtilisation(slot){
 		hdd_total = hdd_used = 0;
 		hdd_name = '';
 		for (const disk of disks) {
-	       
-	       hdd_total = hdd_total + disk.blocks;
-	       hdd_used = hdd_used + disk.used;
-	       used_drive = (disk.used/(1024*1024*1024)).toFixed(2); 
-	       hdd_name = hdd_name.concat(disk.mounted+' '+used_drive+' / ');
+	    	if(disk.filesystem == 'Local Fixed Disk'){
+				hdd_total = hdd_total + disk.blocks;
+				hdd_used = hdd_used + disk.used;
+				used_drive = (disk.used/(1024*1024*1024)).toFixed(2); 
+				hdd_name = hdd_name.concat(disk.mounted+' '+used_drive+' / ');
+			}
 	        
 	    }
 

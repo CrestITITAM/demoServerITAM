@@ -1,6 +1,6 @@
 {
   "name": "ePromptoITAM",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "ITAM Desktop App for Server",
   "main": "main.js",
   "scripts": {
